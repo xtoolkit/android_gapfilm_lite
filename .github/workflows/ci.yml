@@ -1,0 +1,135 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base Url"
+        default: "https://www.gapfilm.ir/"
+      source_channel:
+        description: "Source Channel"
+        default: "gp_website"
+      agent:
+        description: "Agent"
+        default: "mj"
+      api_key:
+        description: "AdTrace API key"
+        default: "sfgklwo7csps"
+
+env:
+  BASE_URL: "${{ github.event.inputs.base_url }}"
+  SOURCE_CHANNEL: "${{ github.event.inputs.source_channel }}"
+  AGENT: "${{ github.event.inputs.agent }}"
+  API_KEY: "${{ github.event.inputs.api_key }}"
+
+jobs:
+  Build_AAP:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: "11"
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Clean project
+        run: ./gradlew clean
+
+      - name: Build Release AAP
+        run: ./gradlew :app:bundleRelease
+
+      - name: Sign AAP
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.SIGN_STORE }}
+          alias: ${{ secrets.SIGN_ALIAS }}
+          keyStorePassword: ${{ secrets.SIGN_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
+
+      - name: Upload AAP
+        uses: actions/upload-artifact@v2
+        with:
+          name: aap-release
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+
+  Build_Debug_APK:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: "11"
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Clean project
+        run: ./gradlew clean
+
+      - name: Build Debug APK
+        run: ./gradlew :app:assembleDebug
+
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/debug
+          signingKeyBase64: ${{ secrets.SIGN_STORE }}
+          alias: ${{ secrets.SIGN_ALIAS }}
+          keyStorePassword: ${{ secrets.SIGN_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
+
+      - name: Upload Debug Apk
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk-debug
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+
+  Build_Release_APK:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: "11"
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      - name: Clean project
+        run: ./gradlew clean
+
+      - name: Build Release APK
+        run: ./gradlew :app:assembleRelease
+
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGN_STORE }}
+          alias: ${{ secrets.SIGN_ALIAS }}
+          keyStorePassword: ${{ secrets.SIGN_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
+
+      - name: Upload Release Apk
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk-release
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
