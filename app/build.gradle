@@ -48,4 +48,5 @@ dependencies {
     implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
     implementation 'io.adtrace:android-sdk:2.1.0'
     implementation 'com.android.installreferrer:installreferrer:2.2'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.0'
 }
