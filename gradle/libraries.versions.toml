@@ -1,0 +1,28 @@
+[versions]
+androidxCore = "1.8.0"
+appCompat = "1.5.0"
+drawerLayout = "1.1.1"
+installReferrer = "2.2"
+playServiceAdsIdentifier = "18.0.1"
+firebaseIID = "21.1.0"
+adtrace = "2.1.0"
+najva = "1.5.4"
+
+# Plugins
+androidGradle = "7.2.1"
+kotlin = "1.7.0"
+
+[libraries]
+androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-app-compat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
+androidx-drawer-layout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerLayout" }
+android-install-referrer = { group = "com.android.installreferrer", name = "installreferrer", version.ref = "installReferrer" }
+google-identifier = { group = "com.google.android.gms", name = "play-services-ads-identifier", version.ref = "playServiceAdsIdentifier" }
+google-firebase-iid = { group = "com.google.firebase", name = "firebase-iid", version.ref = "firebaseIID" }
+adtrace = { group = "io.adtrace", name = "android-sdk", version.ref = "adtrace" }
+najva = { group = "com.najva", name = "sdk", version.ref = "najva" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradle" }
+android-library = { id = "com.android.library", version.ref = "androidGradle" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

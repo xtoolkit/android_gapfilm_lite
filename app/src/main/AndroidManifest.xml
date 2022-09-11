@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
@@ -19,11 +20,19 @@
         <receiver
             android:name="io.adtrace.sdk.AdTraceReferrerReceiver"
             android:exported="true"
+            android:hardwareAccelerated="true"
             android:permission="android.permission.INSTALL_PACKAGES">
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="com.najva.sdk.metadata.API_KEY"
+            android:value="${NAJVA_API_KEY}" />
+        <meta-data
+            android:name="com.najva.sdk.metadata.WEBSITE_ID"
+            android:value="${NAJVA_WEBSITE_ID}" />
 
         <activity
             android:name=".presentation.main.MainActivity"
@@ -36,6 +45,26 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="${HOST}"
+                    android:scheme="https" />
+                <data
+                    android:host="${HOST}"
+                    android:scheme="http" />
+                <data
+                    android:host="${HOST_FULL}"
+                    android:scheme="https" />
+                <data
+                    android:host="${HOST_FULL}"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
     </application>

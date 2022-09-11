@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -21,6 +21,7 @@ import androidx.core.content.edit
 import com.gapfilm.app.BuildConfig
 import com.gapfilm.app.R
 import com.gapfilm.app.presentation.util.*
+import com.najva.sdk.NajvaClient
 
 class MainActivity : AppCompatActivity() {
     private val baseUrl = BuildConfig.BASE_URL
@@ -38,16 +39,17 @@ class MainActivity : AppCompatActivity() {
 
     private val requestUrl: String
         get() {
-            var url = baseUrl
-            val query = mutableListOf(
-                "agent" to BuildConfig.AGENT,
-                "src" to BuildConfig.SOURCE_CHANNEL
-            )
+            val url = (
+                    if (intent?.action == "android.intent.action.VIEW" && intent?.data != null)
+                        intent!!.data!! else Uri.parse(baseUrl)
+                    ).buildUpon()
 
-            if (firstRun) query.add("gpl_firstRun" to "true")
-            if (query.isNotEmpty()) url = "$url?"
+            url.appendQueryParameter("agent", BuildConfig.AGENT)
+            url.appendQueryParameter("src", BuildConfig.SOURCE_CHANNEL)
 
-            return url + query.joinToString("&") { "${it.first}=${it.second}" }
+            if (firstRun) url.appendQueryParameter("gpl_firstRun", "true")
+
+            return url.build().toString()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,23 +98,23 @@ class MainActivity : AppCompatActivity() {
                 if (!detect) disableWatchMode()
             }
 
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                if (request != null) when (request.url.host) {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (url == null) return false
+                val target = Uri.parse(url)
+                var detect = false
+                when (target.host) {
                     "play.google.com",
                     "instagram.com",
                     "www.instagram.com",
                     "wa.me",
                     "chat.whatsapp.com",
-                    "t.me" -> {
-                        try {
-                            startActivity(Intent(Intent.ACTION_VIEW, request.url))
-                            return true
-                        } catch (e: Exception) {
-                        }
-                    }
+                    "t.me" -> detect = true
+                }
+                if (target.scheme == "sms") detect = true
+                if (detect) try {
+                    startActivity(Intent(Intent.ACTION_VIEW, target))
+                    return true
+                } catch (e: Exception) {
                 }
                 return false
             }
