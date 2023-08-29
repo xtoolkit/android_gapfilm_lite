@@ -17,11 +17,9 @@ import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.edit
 import com.gapfilm.app.BuildConfig
 import com.gapfilm.app.R
 import com.gapfilm.app.presentation.util.*
-import com.najva.sdk.NajvaClient
 
 class MainActivity : AppCompatActivity() {
     private val baseUrl = BuildConfig.BASE_URL
@@ -33,10 +31,6 @@ class MainActivity : AppCompatActivity() {
         applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 
-    private var firstRun: Boolean
-        get() = setting.getBoolean("firstRun", true)
-        set(value) = setting.edit { putBoolean("firstRun", value) }
-
     private val requestUrl: String
         get() {
             val url = (
@@ -46,8 +40,6 @@ class MainActivity : AppCompatActivity() {
 
             url.appendQueryParameter("agent", BuildConfig.AGENT)
             url.appendQueryParameter("src", BuildConfig.SOURCE_CHANNEL)
-
-            if (firstRun) url.appendQueryParameter("gpl_firstRun", "true")
 
             return url.build().toString()
         }
@@ -83,7 +75,6 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                if (firstRun) firstRun = false
             }
 
             override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
