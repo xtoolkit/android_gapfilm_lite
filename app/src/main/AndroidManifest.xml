@@ -20,6 +20,7 @@
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:hardwareAccelerated="true"
+            android:screenOrientation="user"
             android:theme="@style/Theme.Gapfilm">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
