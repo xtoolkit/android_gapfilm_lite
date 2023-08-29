@@ -12,23 +12,11 @@ on:
       agent:
         description: "Agent"
         default: "mj"
-      adtrace_api_key:
-        description: "AdTrace API key"
-        default: "sfgklwo7csps"
-      najva_api_key:
-        description: "Najva API key"
-        default: "79cfe251-7660-4e58-9ecc-b53837ef23e9"
-      najva_website_id:
-        description: "Najva Website ID"
-        default: "27891"
 
 env:
   BASE_URL: "${{ github.event.inputs.base_url }}"
   SOURCE_CHANNEL: "${{ github.event.inputs.source_channel }}"
   AGENT: "${{ github.event.inputs.agent }}"
-  ADTRACE_API_KEY: "${{ github.event.inputs.adtrace_api_key }}"
-  NAJVA_API_KEY: "${{ github.event.inputs.najva_api_key }}"
-  NAJVA_WEBSITE_ID: "${{ github.event.inputs.najva_website_id }}"
 
 jobs:
   Build_AAP:
