@@ -77,6 +77,9 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew :app:assembleDebug
 
+      - name: Setup build tool version variable
+        run: ls /usr/local/lib/android/sdk/build-tools/
+
       - name: Sign APK
         uses: r0adkll/sign-android-release@v1
         id: sign_app
@@ -86,6 +89,8 @@ jobs:
           alias: ${{ secrets.SIGN_ALIAS }}
           keyStorePassword: ${{ secrets.SIGN_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Upload Debug Apk
         uses: actions/upload-artifact@v4
@@ -123,6 +128,8 @@ jobs:
           alias: ${{ secrets.SIGN_ALIAS }}
           keyStorePassword: ${{ secrets.SIGN_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
 
       - name: Upload Release Apk
         uses: actions/upload-artifact@v4
