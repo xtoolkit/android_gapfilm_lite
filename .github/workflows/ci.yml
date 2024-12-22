@@ -51,7 +51,7 @@ jobs:
           keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
 
       - name: Upload AAP
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: aap-release
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
@@ -88,7 +88,7 @@ jobs:
           keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
 
       - name: Upload Debug Apk
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: apk-debug
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
@@ -125,7 +125,7 @@ jobs:
           keyPassword: ${{ secrets.SIGN_ALIAS_PASSWORD }}
 
       - name: Upload Release Apk
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: apk-release
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
